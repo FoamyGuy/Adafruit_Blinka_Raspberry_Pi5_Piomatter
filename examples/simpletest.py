@@ -17,8 +17,11 @@ import adafruit_raspberry_pi5_piomatter
 import numpy as np
 import PIL.Image as Image
 
-geometry = adafruit_raspberry_pi5_piomatter.Geometry(width=64, height=64, n_addr_lines=4, rotation=adafruit_raspberry_pi5_piomatter.Orientation.Normal)
+geometry = adafruit_raspberry_pi5_piomatter.Geometry(width=64, height=64, n_addr_lines=4, rotation=adafruit_raspberry_pi5_piomatter.Orientation.R180)
 framebuffer = np.asarray(Image.open(pathlib.Path(__file__).parent / "blinka64x64.png"))
+print(f"len: {len(framebuffer)}")
+print(f"len: {len(framebuffer[0])}")
+print(f"len: {len(framebuffer[0][0])}")
 matrix = adafruit_raspberry_pi5_piomatter.AdafruitMatrixBonnetRGB888Packed(framebuffer, geometry)
 matrix.show()
 

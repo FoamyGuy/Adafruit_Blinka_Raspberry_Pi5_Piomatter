@@ -15,6 +15,8 @@ import numpy as np
 
 yoffset = 0
 xoffset = 0
+width = 128
+height = 64
 
 with open("/sys/class/graphics/fb0/virtual_size") as f:
     screenx, screeny = [int(word) for word in f.read().split(",")]
@@ -32,9 +34,8 @@ with open("/sys/class/graphics/fb0/stride") as f:
 
 linux_framebuffer = np.memmap('/dev/fb0',mode='r', shape=(screeny, stride // bytes_per_pixel), dtype=dtype)
 
-width = 64
-height = 32
-geometry = adafruit_raspberry_pi5_piomatter.Geometry(width=width, height=height, n_addr_lines=4, rotation=adafruit_raspberry_pi5_piomatter.Orientation.Normal)
+
+geometry = adafruit_raspberry_pi5_piomatter.Geometry(width=width, height=height, n_addr_lines=4, rotation=adafruit_raspberry_pi5_piomatter.Orientation.R180)
 matrix_framebuffer = np.zeros(shape=(geometry.height, geometry.width), dtype=dtype)
 matrix = adafruit_raspberry_pi5_piomatter.AdafruitMatrixBonnetRGB565(matrix_framebuffer, geometry)
 
