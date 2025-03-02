@@ -25,7 +25,7 @@ import os
 
 import shlex
 import string
-from subprocess import Popen
+from subprocess import Popen, run
 
 import adafruit_blinka_raspberry_pi5_piomatter as piomatter
 import click
@@ -38,12 +38,9 @@ import tty
 import termios
 
 
-def isData():
-    return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
-
-old_settings = termios.tcgetattr(sys.stdin)
-tty.setcbreak(sys.stdin.fileno())
-os.environ["DISPLAY"] = ":0"
+def is_data():
+    data_list, _, _ = select.select([sys.stdin], [], [], 0)
+    return bool(data_list)
 
 @click.command
 @click.option("--scale", type=float, help="The scale factor, larger numbers mean more virtual pixels",  default=1)
@@ -54,6 +51,9 @@ os.environ["DISPLAY"] = ":0"
 @piomatter_click.standard_options
 @click.argument("command", nargs=-1)
 def main(scale, backend, use_xauth, extra_args, rfbport, width, height, serpentine, rotation, pinout, n_planes, n_addr_lines, command):
+    old_settings = termios.tcgetattr(sys.stdin)
+    tty.setcbreak(sys.stdin.fileno())
+
     kwargs = {}
     if backend == "xvnc":
         kwargs['rfbport'] = rfbport
@@ -69,19 +69,19 @@ def main(scale, backend, use_xauth, extra_args, rfbport, width, height, serpenti
         with SmartDisplay(backend=backend, use_xauth=use_xauth, size=(round(width*scale),round(height*scale)), manage_global_env=False, **kwargs) as disp, Popen(command, env=disp.env()) as proc:
             while proc.poll() is None:
                 img = disp.grab(autocrop=False)
+                #print(disp.env())
                 if img is None:
                     continue
                 img = img.resize((width, height))
                 framebuffer[:, :] = np.array(img)
                 matrix.show()
-
-                if isData():
+                if is_data():
                     c = sys.stdin.read(1)
                     print(c)
                     if c == "\n":
-                        os.system(F"xdotool key Return")
+                        run(["xdotool", "key", "Return"], env=disp.env())
                     elif c in string.printable:
-                        os.system(F"xdotool key {c}")
+                        run(["xdotool", "key",  f"{c}"], env=disp.env())
                     if c == '\x1b':  # x1b is ESC
                         raise KeyboardInterrupt
     finally:
