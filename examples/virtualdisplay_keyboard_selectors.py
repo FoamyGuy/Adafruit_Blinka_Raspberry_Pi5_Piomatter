@@ -122,7 +122,7 @@ key_map = {
     b']': "bracketright",
     b'{': "braceleft",
     b'}': "braceright",
-    #b'': "",
+    b'_': "underscore",
     #b'': "",
 }
 
