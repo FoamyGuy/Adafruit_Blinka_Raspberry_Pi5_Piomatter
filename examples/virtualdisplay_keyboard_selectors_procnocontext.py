@@ -37,7 +37,7 @@ import sys
 
 import tty
 import termios
-import time
+
 import selectors
 import os
 
@@ -172,6 +172,7 @@ def main(scale, backend, use_xauth, extra_args, rfbport, width, height, serpenti
                 char_bytes = char_val.to_bytes(1)
                 handle_key_event(char_bytes)
         else:
+
             print(f"unknown input data: {evt_data}")
 
     old_settings = termios.tcgetattr(sys.stdin)
@@ -193,8 +194,16 @@ def main(scale, backend, use_xauth, extra_args, rfbport, width, height, serpenti
 
     try:
         with SmartDisplay(backend=backend, use_xauth=use_xauth, size=(round(width * scale), round(height * scale)),
-                          manage_global_env=False, **kwargs) as disp, Popen(command, env=disp.env()) as proc:
+                          manage_global_env=False, **kwargs) as disp:
+
+
+
+            #with Popen(command, env=disp.env()) as proc:
+            proc = Popen(command, env=disp.env())
+
+            print(42 / 0)
             while proc.poll() is None:
+
                 img = disp.grab(autocrop=False)
 
                 # print(disp.env())
@@ -224,6 +233,7 @@ def main(scale, backend, use_xauth, extra_args, rfbport, width, height, serpenti
                 #             #next_read = sys.stdin.read(1).encode()
                 #             #print(f"next: {next_read}")
                 event_count = 0
+                #before = time.time()
                 for key, __ in selector.select(timeout=0):
                     event_count += 1
                     # character = key.fileobj.read(1)
@@ -237,8 +247,18 @@ def main(scale, backend, use_xauth, extra_args, rfbport, width, height, serpenti
                 if event_count == 0:
                     for key in keys_down:
                         run(["xdotool", "keyup", key], env=disp.env())
-                    keys_down.clear()
+                #after = time.time()
+                #print(f"took {after - before}")
 
+
+    except ZeroDivisionError as e:
+        print(e)
+    except subprocess.TimeoutExpired:
+        print("Process timed out, terminating...")
+        process.terminate()
+        process.wait()
+    except Exception as e:
+        print(e)
     finally:
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
