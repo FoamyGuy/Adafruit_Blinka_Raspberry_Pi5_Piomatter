@@ -97,8 +97,8 @@ struct active3_pinout_bgr {
 };
 
 struct active3_pinout_rbg {
-    static constexpr pin_t PIN_RGB[] = {11, 7, 27,  8,  10, 9, 12,  6, 5,
-                                        19, 20, 13, 14, 3, 2, 26, 21, 16};
+    static constexpr pin_t PIN_RGB[] = {11, 7,  27, 8,  10, 9, 12, 6,  5,
+                                        19, 20, 13, 14, 3,  2, 26, 21, 16};
     static constexpr pin_t PIN_ADDR[] = {22, 23, 24, 25, 15};
     static constexpr pin_t PIN_OE = 18;  // /OE: output enable when LOW
     static constexpr pin_t PIN_CLK = 17; // SRCLK: clocks on RISING edge
@@ -114,6 +114,5 @@ struct active3_pinout_rbg {
     static constexpr uint32_t post_latch_delay = 0;
     static constexpr uint32_t post_addr_delay = 5;
 };
-
 
 } // namespace piomatter

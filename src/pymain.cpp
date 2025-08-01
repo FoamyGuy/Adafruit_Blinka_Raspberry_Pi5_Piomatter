@@ -70,8 +70,10 @@ enum Colorspace { RGB565, RGB888, RGB888Packed };
 enum Pinout {
     AdafruitMatrixBonnet,
     AdafruitMatrixBonnetBGR,
+    AdafruitMatrixBonnetRBG,
     Active3,
     Active3BGR,
+    Active3RBG,
 };
 
 template <class pinout>
@@ -104,10 +106,16 @@ make_piomatter(Colorspace c, Pinout p, py::buffer buffer,
     case AdafruitMatrixBonnetBGR:
         return make_piomatter_p<piomatter::adafruit_matrix_bonnet_pinout_bgr>(
             c, buffer, geometry);
+    case AdafruitMatrixBonnetRBG:
+        return make_piomatter_p<piomatter::adafruit_matrix_bonnet_pinout_rbg>(
+            c, buffer, geometry);
     case Active3:
         return make_piomatter_p<piomatter::active3_pinout>(c, buffer, geometry);
     case Active3BGR:
         return make_piomatter_p<piomatter::active3_pinout_bgr>(c, buffer,
+                                                               geometry);
+    case Active3RBG:
+        return make_piomatter_p<piomatter::active3_pinout_rbg>(c, buffer,
                                                                geometry);
     }
     throw std::runtime_error(py::str("Invalid pinout {!r}")
