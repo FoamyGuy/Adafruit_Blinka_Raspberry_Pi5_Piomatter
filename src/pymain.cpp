@@ -152,13 +152,19 @@ PYBIND11_MODULE(_piomatter, m) {
                "Adafruit Matrix Bonnet or Matrix Hat")
         .value("AdafruitMatrixBonnetBGR", Pinout::AdafruitMatrixBonnetBGR,
                "Adafruit Matrix Bonnet or Matrix Hat with BGR color order")
+        .value("AdafruitMatrixBonnetRBG", Pinout::AdafruitMatrixBonnetRBG,
+               "Adafruit Matrix Bonnet or Matrix Hat with RBG color order")
         .value("AdafruitMatrixHat", Pinout::AdafruitMatrixBonnet,
                "Adafruit Matrix Bonnet or Matrix Hat")
         .value("AdafruitMatrixHatBGR", Pinout::AdafruitMatrixBonnetBGR,
                "Adafruit Matrix Bonnet or Matrix Hat with BGR color order")
+        .value("AdafruitMatrixHatRBG", Pinout::AdafruitMatrixBonnetRBG,
+               "Adafruit Matrix Bonnet or Matrix Hat with RBG color order")
         .value("Active3", Pinout::Active3, "Active-3 or compatible board")
         .value("Active3BGR", Pinout::Active3BGR,
                "Active-3 or compatible board with BGR color order");
+        .value("Active3RBG", Pinout::Active3RBG,
+               "Active-3 or compatible board with RBG color order");
 
     py::enum_<Colorspace>(
         m, "Colorspace",
